@@ -27,6 +27,7 @@ from create_model import *
 from load_dataset import *
 from utils import *
 from subpath_finder import *
+from operator import itemgetter
 
 
 # Costs Matrix
@@ -48,3 +49,10 @@ if __name__ == '__main__':
     df = convert_dataframe_names(df, nodes)
     paths = get_paths(df, nodes)
     print(paths)
+
+    a = max(paths, key=itemgetter(1))
+    paths.remove(a)
+    b = max(paths, key=itemgetter(1))
+    paths.remove(b)
+    print(a)
+    print(b)
