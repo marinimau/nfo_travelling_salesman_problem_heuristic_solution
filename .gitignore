@@ -2,3 +2,4 @@
 /venv/
 /.idea/
 /cplex/
+__pycache__/
