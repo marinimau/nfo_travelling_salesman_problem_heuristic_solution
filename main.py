@@ -22,37 +22,47 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 """
+import numpy
 
 from create_model import *
 from load_dataset import *
-from merge_paths import get_biggest_sub_path
 from utils import *
 from subpath_finder import *
-from operator import itemgetter
 
 
 # Costs Matrix
 costs = []
 
 if __name__ == '__main__':
-    costs = load_costs_matrix("dataset/br17.dat")
+    costs = load_costs_matrix("dataset/ftv33.dat")
     # Number of nodes
     nodes = len(costs)
     # Range of the nodes
     range_nodes = range(nodes)
     # Create the model
     m = create_assignment_model('tsp_heuristic', range_nodes, costs)
-    # m.print_information()
+    # Solve the model
     solution = m.solve()
-    # m.report()
-    # print(solution)
+    # Print the report
+    m.report()
+    # Get the solution as df
     df = solution.as_df()
+    # Convert the dataframe
     df = convert_dataframe_names(df, nodes)
 
+    # Get al the paths
     paths = get_paths(df, nodes)
-    print(paths)
-    a = get_biggest_sub_path(paths)
-    b = get_biggest_sub_path(paths)
-    paths.remove(b)
-    print(a)
-    print(b)
+    # Until there are no sub paths left
+    while len(paths) != 1:
+        # Merge the sub paths
+        merge_sub_paths(paths, costs)
+
+    # Get the final path
+    path = convert_path_to_final(paths[0][0])
+    # Convert the path to the decision variable matrix
+    matrix = convert_path_to_matrix(path, nodes)
+    # Convert the cost list of list to a numpy matrix
+    costs_matrix = numpy.array(costs)
+    # Multiply and sum the result
+    result = matrix*costs_matrix
+    print(result.sum())

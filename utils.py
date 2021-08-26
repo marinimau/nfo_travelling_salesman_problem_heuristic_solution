@@ -24,14 +24,15 @@ OTHER DEALINGS IN THE SOFTWARE.
 """
 
 import numpy
+from merge_paths import *
 
 
 def convert_row(d, nodes):
     """
-    Convert row
-    :param d:
-    :param nodes:
-    :return:
+    Convert a row of the column "name" of the dataframe. It computes the starting node and the ending node of an arc
+    :param d: The row of the column name
+    :param nodes: Number of nodes
+    :return: The row and column (start and end) values
     """
     row = int(int(d['name'][1:]) / nodes) + 1
     col = int(int(d['name'][1:]) % nodes)
@@ -43,10 +44,11 @@ def convert_row(d, nodes):
 
 def convert_dataframe_names(df, nodes):
     """
-    Convert dataframe names
-    :param df:
-    :param nodes:
-    :return:
+    Convert the values of the column names with a field start (the starting node of the arc) and a field end
+    (the ending node of the arc)
+    :param df: a Pandas dataframe that contains the solution of the model
+    :param nodes: the number of nodes
+    :return: a Pandas dataframe with three fields [value, start, end]
     """
     start = []
     end = []
@@ -74,3 +76,27 @@ def solution_to_matrix(df, nodes):
         col = pos[1] - 1
         matrix[row][col] = 1
     return matrix
+
+
+def convert_path_to_matrix(path, nodes):
+    """
+    Convert the path to the decision variable matrix x
+    :param path: the path list
+    :param nodes: the number of nodes
+    :return: A boolean numpy matrix with the decision variable x
+    """
+    matrix = numpy.zeros((nodes, nodes))
+    for i in range(len(path) - 1):
+        matrix[path[i]][path[i + 1]] = 1
+    return matrix
+
+
+def convert_path_to_final(path):
+    """
+    Split the path to get the final path form (starts from node 0 and end to node 0
+    :param path: The path list
+    :return: A list with the path in final form
+    """
+    p1, p2 = split_path(path, 0)
+    p2 = [0] + p2
+    return p2 + p1
