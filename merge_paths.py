@@ -23,36 +23,25 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 """
 
-from create_model import *
-from load_dataset import *
-from merge_paths import get_biggest_sub_path
-from utils import *
-from subpath_finder import *
 from operator import itemgetter
 
 
-# Costs Matrix
-costs = []
+def get_biggest_sub_path(paths):
+    """
+    Return the biggest paths
+    :param paths: the (path, node_counter) list
+    :return: the biggest path
+    """
+    biggest = max(paths, key=itemgetter(1))
+    paths.remove(biggest)
+    return biggest
 
-if __name__ == '__main__':
-    costs = load_costs_matrix("dataset/br17.dat")
-    # Number of nodes
-    nodes = len(costs)
-    # Range of the nodes
-    range_nodes = range(nodes)
-    # Create the model
-    m = create_assignment_model('tsp_heuristic', range_nodes, costs)
-    # m.print_information()
-    solution = m.solve()
-    # m.report()
-    # print(solution)
-    df = solution.as_df()
-    df = convert_dataframe_names(df, nodes)
 
-    paths = get_paths(df, nodes)
-    print(paths)
+def merge_sub_paths(paths):
+    """
+    merge the sub paths
+    :param paths: the (path, node_counter) list
+    :return:
+    """
     a = get_biggest_sub_path(paths)
     b = get_biggest_sub_path(paths)
-    paths.remove(b)
-    print(a)
-    print(b)
