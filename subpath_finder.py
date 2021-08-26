@@ -46,15 +46,18 @@ def get_paths(df, nodes):
     visited = [False] * nodes
     paths = []
     path = []
+    node_counter = 0
     # Set the node 1 to visited and add it to the path
     visited[df['start'].iloc[0]] = True
     path.append(df['start'].iloc[0] + 1)
+    node_counter += 1
     # Take the endpoint of the arc
     subsequent = df['end'].iloc[0]
     while subsequent != -1:
         # Set the start node to the visited and add it to the path
         visited[df['start'].iloc[subsequent]] = True
         path.append(df['start'].iloc[subsequent] + 1)
+        node_counter += 1
         # If the end of the arc is not visited
         if not visited[df['end'].iloc[subsequent]]:
             # Change the subsequent node with the end of the arc
@@ -64,9 +67,10 @@ def get_paths(df, nodes):
             # Add the end node to the path
             path.append(df['end'].iloc[subsequent] + 1)
             # Add the sub path to the paths list
-            paths.append(path)
+            paths.append((path, node_counter))
             # Start a new path
             path = []
+            node_counter = 0
             # Get the subsequent node not visited
             subsequent = get_subsequent_node(visited)
     return paths
