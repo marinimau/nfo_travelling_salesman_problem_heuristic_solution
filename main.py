@@ -27,14 +27,16 @@ from create_model import *
 from load_dataset import *
 from utils import *
 from subpath_finder import *
+import time
 
 
 if __name__ == '__main__':
-    costs = load_costs_matrix("dataset/ftv33.dat")
+    costs = load_costs_matrix("dataset/rbg443.dat")
     # Number of nodes
     nodes = len(costs)
     # Range of the nodes
     range_nodes = range(nodes)
+    start = time.time()
     # Create the model
     m = create_assignment_model('tsp_heuristic', range_nodes, costs)
     # Solve the model
@@ -62,3 +64,6 @@ if __name__ == '__main__':
     # Multiply and sum the result
     result = matrix*costs_matrix
     print(result.sum())
+    end = time.time()
+    elapsed = end - start
+    print(elapsed)
