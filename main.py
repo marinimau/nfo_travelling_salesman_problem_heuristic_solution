@@ -29,9 +29,6 @@ from utils import *
 from subpath_finder import *
 
 
-# Costs Matrix
-costs = []
-
 if __name__ == '__main__':
     costs = load_costs_matrix("dataset/ftv33.dat")
     # Number of nodes
